@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
+import {useSelector} from 'react-redux'
 import './App.css';
+import {Header} from "./components/Header";
+import {CustomPlayer} from "./components/CustomPlayer";
+import AddPlayerForm from "./components/AddPlayerForm";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const players = useSelector(state => state.playerReducer.players);
+
+    const getHighScore = () => {
+        const highScore = Math.max.apply(Math, players.map(o => o.score));
+        return highScore === 0 ? '' : highScore;
+    };
+
+    return (
+        <div className="scoreboard">
+            <Header players={players}></Header>
+            {
+                players.map(player =>
+                    <CustomPlayer name={player.name} score={player.score}
+                                  id={player.id} key={player.id}
+                                  isHighScore={player.score === getHighScore()}>
+                    </CustomPlayer>
+                )
+            }
+            <AddPlayerForm></AddPlayerForm>
+        </div>
+    );
 }
 
 export default App;
